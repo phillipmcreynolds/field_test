@@ -1,8 +1,6 @@
 import 'package:field_test/helpers/size_helpers.dart';
 import 'package:flutter/material.dart';
 
-
-
 class FormWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _FormWidgetState();
@@ -58,73 +56,62 @@ class _FormWidgetState extends State<FormWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Form Widget",
-          style: TextStyle(
-            color: Colors.white, fontWeight: FontWeight.bold
-          )
-        )
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget> [
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.all(24),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget> [
-                      _buildKeywordsField(),
-                      _buildTypeField(),
-                      _buildStateField(),
-                      SizedBox(height: 15),
-                      RaisedButton(
-                        child: Text(
-                          'Search',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                        onPressed: () => {
-                          _formKey.currentState.save(),
-                          _update(),
-                        }
-                      )
-                    ]
-                  )
-                )
-              )
-            ),
-            Container(
-              width: displayWidth(context) * .95,
-              height: displayHeight(context) * .75,
-              child:
-                Builder(
-                  builder: (_) {
-                    return ListView.separated(
-                      separatorBuilder: (_, __) =>
-                      Divider(height: 1, color: Colors.orange),
-                      itemBuilder: (_, index) {
-                        return ListTile(
-                          isThreeLine: true,
-                          title: Text(
-                            "Keywords: " + _keywords_display,
-                            style: TextStyle(color: Theme.of(context).primaryColor),
-                          ),
-                          subtitle: Text(
-                              "Type: " + _type_display + "\nState: " + _state_display,
-                          maxLines: 2,
+        appBar: AppBar(
+            title: Text("Form Widget",
+                style: TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold))),
+        body: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Form(
+                      key: _formKey,
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            _buildKeywordsField(),
+                            _buildTypeField(),
+                            _buildStateField(),
+                            SizedBox(height: 15),
+                            RaisedButton(
+                                child: Text(
+                                  'Search',
+                                  style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                                ),
+                                onPressed: () => {
+                                  _formKey.currentState.save(),
+                                  _update(),
+                                })
+                          ])),
+                  Container(
+                    width: displayWidth(context) * .95,
+                    height: displayHeight(context) * .75,
+                    child: Builder(builder: (_) {
+                      return ListView.separated(
+                        separatorBuilder: (_, __) =>
+                            Divider(height: 1, color: Colors.orange),
+                        itemBuilder: (_, index) {
+                          return ListTile(
+                            isThreeLine: true,
+                            title: Text(
+                              "Keywords: " + _keywords_display,
+                              style:
+                              TextStyle(color: Theme.of(context).primaryColor),
+                            ),
+                            subtitle: Text(
+                              "Type: " +
+                                  _type_display +
+                                  "\nState: " +
+                                  _state_display,
+                              maxLines: 2,
                             ),
                           );
                         },
-                      itemCount: 1,
-                    );
-
-                  }),
-            )]
-        )
-      )
-    );
+                        itemCount: 1,
+                      );
+                    }),
+                  )
+                ])));
   }
 }
