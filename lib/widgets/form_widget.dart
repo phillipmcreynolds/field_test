@@ -64,26 +64,31 @@ class _FormWidgetState extends State<FormWidget> {
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Form(
-                      key: _formKey,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            _buildKeywordsField(),
-                            _buildTypeField(),
-                            _buildStateField(),
-                            SizedBox(height: 15),
-                            RaisedButton(
-                                child: Text(
-                                  'Search',
-                                  style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                                ),
-                                onPressed: () => {
-                                  _formKey.currentState.save(),
-                                  _update(),
-                                })
-                          ])),
+                  Container(
+                      margin: EdgeInsets.all(24),
+                      child:
+                      Form(
+                          key: _formKey,
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                _buildKeywordsField(),
+                                _buildTypeField(),
+                                _buildStateField(),
+                                SizedBox(height: 15),
+                                RaisedButton(
+                                    child: Text(
+                                      'Search',
+                                      style:
+                                      TextStyle(color: Colors.white, fontSize: 16),
+                                    ),
+                                    onPressed: () => {
+                                      _formKey.currentState.save(),
+                                      _update(),
+                                    })
+                              ])
+                      ),
+                  ),
                   Container(
                     width: displayWidth(context) * .95,
                     height: displayHeight(context) * .75,
