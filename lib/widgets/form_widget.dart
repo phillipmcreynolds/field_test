@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:field_test/helpers/size_helpers.dart';
 import 'package:flutter/material.dart';
 
@@ -7,10 +9,31 @@ class FormWidget extends StatefulWidget {
 
 }
 
+class BreweryType {
+  int id;
+  String name;
+
+  BreweryType(this.id, this.name);
+
+  static List<BreweryType> getBreweryTypes() {
+    return <BreweryType>[
+      BreweryType(0, ""),
+      BreweryType(1, "Brewpub"),
+      BreweryType(2, "MicroBrewery"),
+      BreweryType(3, "Contract"),
+      BreweryType(4, "Regional"),
+    ];
+  }
+}
+
 class _FormWidgetState extends State<FormWidget> {
-  String _keywords, _keywords_display = "";
-  String _type, _type_display = "";
-  String _state, _state_display = "";
+  String _keywords, _keywordsDisplay = "";
+  String _type, _typeDisplay = "";
+  String _state, _stateDisplay = "";
+
+  List<BreweryType> _breweryTypes = BreweryType.getBreweryTypes();
+  List<DropdownMenuItem<BreweryType>> _dropDownMenuItems;
+  BreweryType _selectedType;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -19,8 +42,23 @@ class _FormWidgetState extends State<FormWidget> {
 
   @override
   void initState() {
-    super.initState();
     focusNode = FocusNode();
+    _dropDownMenuItems = buildDropDownMenuItems(_breweryTypes);
+    _selectedType = _dropDownMenuItems[0].value;
+    super.initState();
+
+  }
+
+  List<DropdownMenuItem<BreweryType>> buildDropDownMenuItems(List breweryTypes) {
+    List<DropdownMenuItem<BreweryType>> types = [];
+    for(BreweryType breweryType in _breweryTypes) {
+      types.add(DropdownMenuItem(
+        value: breweryType,
+        child: Text(breweryType.name),
+      ),
+      );
+    }
+    return types;
   }
 
   @override
@@ -42,12 +80,11 @@ class _FormWidgetState extends State<FormWidget> {
   }
 
   Widget _buildTypeField() {
-    return TextFormField(
-        decoration: InputDecoration(labelText: 'Type'),
-        onSaved: (String value) {
-          _type = value;
-          print(_type + "saved");
-        }
+    return DropdownButton(
+      value: _selectedType,
+      items: _dropDownMenuItems,
+      hint: Text("Brewery Type"), // doesn't do anything afaict
+      onChanged: onChangeDropdownItem,
     );
   }
 
@@ -64,10 +101,17 @@ class _FormWidgetState extends State<FormWidget> {
   void _update() {
     print("update called");
     setState(() {
-      _keywords_display = _keywords;
-      _type_display = _type;
-      _state_display = _state;
+      _keywordsDisplay = _keywords;
+      _typeDisplay = _selectedType.name;
+      _stateDisplay = _state;
     });
+  }
+
+  onChangeDropdownItem (BreweryType selected) {
+    setState(() {
+      _selectedType = selected;
+    }
+    );
   }
 
   @override
@@ -118,15 +162,15 @@ class _FormWidgetState extends State<FormWidget> {
                           return ListTile(
                             isThreeLine: true,
                             title: Text(
-                              "Keywords: " + _keywords_display,
+                              "Keywords: " + _keywordsDisplay,
                               style:
                               TextStyle(color: Theme.of(context).primaryColor),
                             ),
                             subtitle: Text(
                               "Type: " +
-                                  _type_display +
+                                  _typeDisplay +
                                   "\nState: " +
-                                  _state_display,
+                                  _stateDisplay,
                               maxLines: 2,
                             ),
                           );
@@ -138,3 +182,4 @@ class _FormWidgetState extends State<FormWidget> {
                 ])));
   }
 }
+
