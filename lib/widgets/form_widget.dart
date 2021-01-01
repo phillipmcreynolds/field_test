@@ -17,7 +17,7 @@ class BreweryType {
 
   static List<BreweryType> getBreweryTypes() {
     return <BreweryType>[
-      BreweryType(0, ""),
+      BreweryType(0, "Brewery Type"),
       BreweryType(1, "Brewpub"),
       BreweryType(2, "MicroBrewery"),
       BreweryType(3, "Contract"),
@@ -26,14 +26,36 @@ class BreweryType {
   }
 }
 
+class BreweryState {
+  int id;
+  String name;
+
+  BreweryState(this.id, this.name);
+
+  static List<BreweryState> getBreweryStates() {
+    return <BreweryState>[
+      BreweryState(0, "Brewery State"),
+      BreweryState(1, "Alaska"),
+      BreweryState(2, "Alabama"),
+      BreweryState(3, "Florida"),
+      BreweryState(4, "Georgia"),
+    ];
+  }
+}
+
 class _FormWidgetState extends State<FormWidget> {
   String _keywords, _keywordsDisplay = "";
-  String _type, _typeDisplay = "";
-  String _state, _stateDisplay = "";
+  String _typeDisplay = "";
+  String  _stateDisplay = "";
+  bool _andSearch = false;
 
   List<BreweryType> _breweryTypes = BreweryType.getBreweryTypes();
-  List<DropdownMenuItem<BreweryType>> _dropDownMenuItems;
+  List<DropdownMenuItem<BreweryType>> _typeDropDownMenuItems;
   BreweryType _selectedType;
+  List<BreweryState> _breweryStates = BreweryState.getBreweryStates();
+  List<DropdownMenuItem<BreweryState>> _stateDropDownMenuItems;
+  BreweryState _selectedState;
+
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -43,13 +65,15 @@ class _FormWidgetState extends State<FormWidget> {
   @override
   void initState() {
     focusNode = FocusNode();
-    _dropDownMenuItems = buildDropDownMenuItems(_breweryTypes);
-    _selectedType = _dropDownMenuItems[0].value;
+    _typeDropDownMenuItems = buildTypeDropDownMenuItems(_breweryTypes);
+    _selectedType = _typeDropDownMenuItems[0].value;
+    _stateDropDownMenuItems = buildStateDropDownMenuItems(_breweryStates);
+    _selectedState = _stateDropDownMenuItems[0].value;
     super.initState();
 
   }
 
-  List<DropdownMenuItem<BreweryType>> buildDropDownMenuItems(List breweryTypes) {
+  List<DropdownMenuItem<BreweryType>> buildTypeDropDownMenuItems(List breweryTypes) {
     List<DropdownMenuItem<BreweryType>> types = [];
     for(BreweryType breweryType in _breweryTypes) {
       types.add(DropdownMenuItem(
@@ -61,57 +85,150 @@ class _FormWidgetState extends State<FormWidget> {
     return types;
   }
 
+  List<DropdownMenuItem<BreweryState>> buildStateDropDownMenuItems(List breweryStates) {
+    List<DropdownMenuItem<BreweryState>> states = [];
+    for(BreweryState breweryState in _breweryStates) {
+      states.add(DropdownMenuItem(
+        value: breweryState,
+        child: Text(breweryState.name),
+      ),
+      );
+    }
+    return states;
+  }
+
   @override
   void dispose() {
     focusNode.dispose();
     super.dispose();
   }
 
+  Widget _buildSearchTypeRadio() {
+    return Column(
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Radio(
+              value: true,
+              groupValue: _andSearch,
+              onChanged: (bool value) {
+                setState(() {
+                  _andSearch = value;
+                });
+              },
+            ),
+            Text('AND Search'),
+            Radio(
+              value: false,
+              groupValue: _andSearch,
+              onChanged: (bool value) {
+                setState(() {
+                  _andSearch = value;
+                });
+              },
+            ),
+            Text('OR Search'),
+          ]
+        )
+      ]
+    );
+  }
+
   Widget _buildKeywordsField() {
-    return TextFormField(
-      autofocus: true,
-      focusNode: focusNode,
-      decoration: InputDecoration(labelText: 'Keywords'),
-      onSaved: (String value) {
-        _keywords = value;
-        print(_keywords + "saved");
-      }
+    return Container(
+      width: 300,
+      child: TextFormField(
+          autofocus: true,
+          focusNode: focusNode,
+          decoration: InputDecoration(labelText: 'Keywords'),
+          onSaved: (String value) {
+            _keywords = value;
+            print(_keywords + "saved");
+          }
+      )
     );
   }
 
   Widget _buildTypeField() {
-    return DropdownButton(
-      value: _selectedType,
-      items: _dropDownMenuItems,
-      hint: Text("Brewery Type"), // doesn't do anything afaict
-      onChanged: onChangeDropdownItem,
-    );
+    return Container(
+      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: Colors.orange,
+        border: Border.all(
+          color: Colors.white,
+        )),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton(
+          style: new TextStyle(color: Colors.white),
+          value: _selectedType,
+          items: _typeDropDownMenuItems,
+          hint: Text("Brewery Type"), // doesn't do anything afaict
+          onChanged: onChangeTypeDropdownItem,
+          dropdownColor: Colors.orangeAccent,
+        ),
+      ),
+      );
   }
 
   Widget _buildStateField() {
-    return TextFormField(
-        decoration: InputDecoration(labelText: 'State'),
-        onSaved: (String value) {
-          _state = value;
-          print(_state + "saved");
-        }
+    return Container(
+      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          color: Colors.orange,
+          border: Border.all(
+            color: Colors.white,
+          )),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton(
+          style: new TextStyle(color: Colors.white),
+          value: _selectedState,
+          items: _stateDropDownMenuItems,
+          hint: Text("Brewery State"), // doesn't do anything afaict
+          onChanged: onChangeStateDropdownItem,
+          dropdownColor: Colors.orangeAccent,
+        ),
+      ),
     );
   }
+
 
   void _update() {
     print("update called");
     setState(() {
       _keywordsDisplay = _keywords;
-      _typeDisplay = _selectedType.name;
-      _stateDisplay = _state;
+      // have to check this because I'm storing hte label as the first type
+      if (_selectedType.id != 0) {
+        _typeDisplay = _selectedType.name;
+      } else {
+        _typeDisplay = "";
+      }
+      if (_selectedState.id != 0) {
+        _stateDisplay = _selectedState.name;
+      } else {
+        _stateDisplay = "";
+      }
     });
   }
 
-  onChangeDropdownItem (BreweryType selected) {
+  onChangeTypeDropdownItem (BreweryType selected) {
     setState(() {
       _selectedType = selected;
     }
     );
+  }
+
+  onChangeStateDropdownItem (BreweryState selected) {
+    setState(() {
+      _selectedState = selected;
+    }
+    );
+  }
+
+  String searchTypeString() {
+    return (_andSearch) ? "AND" : "OR";
   }
 
   @override
@@ -133,9 +250,31 @@ class _FormWidgetState extends State<FormWidget> {
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                _buildKeywordsField(),
-                                _buildTypeField(),
-                                _buildStateField(),
+                                Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        _buildKeywordsField(),
+                                        _buildSearchTypeRadio(),
+                                      ]
+                                  )
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Spacer(),
+                                        _buildStateField(),
+                                        VerticalDivider(),
+                                        _buildTypeField(),
+                                        Spacer(),
+                                      ]
+                                  ),
+                                ),
                                 SizedBox(height: 15),
                                 RaisedButton(
                                     child: Text(
@@ -162,7 +301,8 @@ class _FormWidgetState extends State<FormWidget> {
                           return ListTile(
                             isThreeLine: true,
                             title: Text(
-                              "Keywords: " + _keywordsDisplay,
+                              "Keywords: " + _keywordsDisplay +
+                                  ", Search Type: " + searchTypeString(),
                               style:
                               TextStyle(color: Theme.of(context).primaryColor),
                             ),
