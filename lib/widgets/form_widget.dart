@@ -14,13 +14,30 @@ class _FormWidgetState extends State<FormWidget> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  FocusNode focusNode;
+
+
+  @override
+  void initState() {
+    super.initState();
+    focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
+  }
+
   Widget _buildKeywordsField() {
     return TextFormField(
-        decoration: InputDecoration(labelText: 'Keywords'),
-        onSaved: (String value) {
-          _keywords = value;
-          print(_keywords + "saved");
-        }
+      autofocus: true,
+      focusNode: focusNode,
+      decoration: InputDecoration(labelText: 'Keywords'),
+      onSaved: (String value) {
+        _keywords = value;
+        print(_keywords + "saved");
+      }
     );
   }
 
@@ -85,6 +102,7 @@ class _FormWidgetState extends State<FormWidget> {
                                     onPressed: () => {
                                       _formKey.currentState.save(),
                                       _update(),
+                                      FocusScope.of(context).requestFocus(focusNode),
                                     })
                               ])
                       ),
