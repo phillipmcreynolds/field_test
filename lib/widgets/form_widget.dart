@@ -109,6 +109,7 @@ class _FormWidgetState extends State<FormWidget> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text('Search:'),
             Radio(
               value: true,
               groupValue: _andSearch,
@@ -118,7 +119,7 @@ class _FormWidgetState extends State<FormWidget> {
                 });
               },
             ),
-            Text('AND Search'),
+            Text('AND'),
             Radio(
               value: false,
               groupValue: _andSearch,
@@ -128,7 +129,7 @@ class _FormWidgetState extends State<FormWidget> {
                 });
               },
             ),
-            Text('OR Search'),
+            Text('OR'),
           ]
         )
       ]
